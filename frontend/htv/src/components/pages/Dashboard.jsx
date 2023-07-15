@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
@@ -16,6 +16,7 @@ const Dashboard = () => {
   return (
     <div className="flex h-screen justify-center items-center">
       <div className="text-4xl font-bold">Welcome to HTVision</div>
+      <div className="text-2xl font-semibold">You are just a step away from getting Hired.</div>
     </div>
   );
 };
