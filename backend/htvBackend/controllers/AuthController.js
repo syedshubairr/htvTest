@@ -24,7 +24,7 @@ export const registerUser = async (req, res, next) => {
   if (!user) {
     return res.status(500).json({ message: "Unexpected Error Occured" });
   }
-  return res.status(201).json({ user });
+  return res.status(201).json({ message: "Registration Done" });
 };
 
 export const loginUser = (req, res, next) => {
@@ -65,25 +65,6 @@ export const loginUser = (req, res, next) => {
     } else {
       res.json({
         message: "No User found",
-      });
-    }
-  });
-};
-export const refreshToken = (res, req, next) => {
-  const refreshtok = req.body.refreshToken;
-  verify(refreshtok, process.env.REFRESH_TOKEN_SECRET, function (err, decode) {
-    if (err)
-      res.status(400).json({
-        err,
-      });
-    else {
-      let token = sign({ name: decode.name }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "60s",
-      });
-      res.status(200).json({
-        message: "refreshed Token",
-        token,
-        refreshtok,
       });
     }
   });

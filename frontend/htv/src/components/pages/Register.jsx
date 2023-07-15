@@ -1,8 +1,27 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
+  const saveUser = async (data) => {
+    const req = await axios
+      .post("http://localhost:3000/register/", data)
+      .then((res) => {
+        console.log("Response: ", res);
+        console.log("Response: ", res.data.message);
+      })
+      .catch((error) => {
+        console.log("Error: ", error);
+      });
+    toast.promise(req, {
+      pending: "Loading",
+      success: "User Registered",
+      error: "Error while creating User",
+    });
+  };
   const [btn, setBtn] = useState(false);
   const initialValue = {
     email: "",
@@ -25,7 +44,14 @@ const Register = () => {
   });
   const handleSubmit = (values, { resetForm }) => {
     setBtn(true);
-    console.log(values);
+    const { email, password, name } = values;
+    const data = {
+      email,
+      password,
+      name,
+    };
+    console.log(data);
+    saveUser(data);
     resetForm();
     setBtn(false);
   };
@@ -123,6 +149,7 @@ const Register = () => {
               Register
             </button>
           </div>
+          <ToastContainer />
         </Form>
       </Formik>
     </div>

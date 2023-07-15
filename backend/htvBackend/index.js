@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import AuthRoutes from "./routes/auth.js";
 import express from "express";
 import { config } from "dotenv";
+import cors from "cors";
 
 const { urlencoded, json } = bodyParser;
 config();
@@ -10,6 +11,7 @@ config();
 const app = express();
 app.use(urlencoded({ extended: true }));
 app.use(json());
+app.use(cors());
 
 connect(
   "mongodb+srv://syedshubair8299:shahgee8299@cluster0.enmaigf.mongodb.net/?retryWrites=true&w=majority",
