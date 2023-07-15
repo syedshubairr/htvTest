@@ -1,17 +1,15 @@
 import User from "../models/user.js";
 import bcryptjs from "bcryptjs";
 const { compareSync, hashSync } = bcryptjs;
-import jsonwebtoken from "jsonwebtoken";
-const { sign, verify } = jsonwebtoken;
 
 export const registerUser = async (req, res, next) => {
   const { name, email, password } = req.body;
   const isExist = await User.find({ email });
   if (isExist && isExist.length) {
-    return res.status(400).json({ message: "User Already Exist" });
+    return res.status(200).json({ message: "User Already Exist" });
   }
   if (!name || !email || !password) {
-    return res.status(400).json({ message: "Invalid Data" });
+    return res.status(200).json({ message: "Invalid Data" });
   }
   const hash = hashSync(password);
   let user;
@@ -27,47 +25,28 @@ export const registerUser = async (req, res, next) => {
   return res.status(201).json({ message: "Registration Done" });
 };
 
-export const loginUser = (req, res, next) => {
-  console.log(req.body);
-  let email = req.body.email;
-  let password = req.body.password;
-
-  User.findOne({ email }).then((user) => {
-    if (user) {
-      compare(password, user.password, function (err, result) {
-        if (err) {
-          res.json({
-            error: err,
-          });
-        }
-        if (result) {
-          let token = sign(
-            { name: user.name },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: "1h" }
-          );
-          let refreshToken = sign(
-            { name: user.name },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: "48h" }
-          );
-          res.json({
-            message: "Login Successful",
-            token,
-            refreshToken,
-          });
-        } else {
-          res.json({
-            message: "password does not matched",
-          });
-        }
-      });
-    } else {
-      res.json({
-        message: "No User found",
-      });
-    }
-  });
+export const loginUser = async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ message: "Invalid Data" });
+  }
+  let oldUser;
+  try {
+    oldUser = await User.findOne({ email });
+  } catch (error) {
+    return console.log(error);
+  }
+  if (!oldUser) {
+    return res.status(404).json({ message: "No user Found" });
+  }
+  const isCorrectPassword = compareSync(password, oldUser.password);
+  if (!isCorrectPassword) {
+    return res.status(400).json({ message: "Incorrect Password or Email" });
+  } else {
+    return res
+      .status(200)
+      .json({ id: oldUser._id, message: "Login Successfull" });
+  }
 };
 
 export const getAllUsers = async (req, res) => {

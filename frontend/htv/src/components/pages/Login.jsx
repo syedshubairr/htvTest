@@ -1,9 +1,28 @@
+import axios from "axios";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { useState } from "react";
 import * as Yup from "yup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Login = () => {
   const [btn, setBtn] = useState(false);
+  const userLogin = async (data) => {
+    await axios
+      .post("http://localhost:3000/login/", data)
+      .then((res) => {
+        toast.success(res.data.message, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+        console.log(res);
+      })
+      .catch((err) => {
+        toast.error(err.response.data.message, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
+        console.log(err);
+      });
+  };
   const initialValue = {
     email: "",
     password: "",
@@ -16,7 +35,13 @@ const Login = () => {
   });
   const handleSubmit = (values, { resetForm }) => {
     setBtn(true);
-    console.log(values);
+    const { email, password } = values;
+    const data = {
+      email,
+      password,
+    };
+    userLogin(data);
+    console.log(data);
     resetForm();
     setBtn(false);
   };
@@ -78,6 +103,7 @@ const Login = () => {
               Login
             </button>
           </div>
+          <ToastContainer />
         </Form>
       </Formik>
     </div>

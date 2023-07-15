@@ -7,20 +7,21 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Register = () => {
   const saveUser = async (data) => {
-    const req = await axios
+    await axios
       .post("http://localhost:3000/register/", data)
       .then((res) => {
+        toast.success(res.data.message, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
         console.log("Response: ", res);
         console.log("Response: ", res.data.message);
       })
       .catch((error) => {
+        toast.error(error.response.data.message, {
+          position: toast.POSITION.BOTTOM_CENTER,
+        });
         console.log("Error: ", error);
       });
-    toast.promise(req, {
-      pending: "Loading",
-      success: "User Registered",
-      error: "Error while creating User",
-    });
   };
   const [btn, setBtn] = useState(false);
   const initialValue = {
