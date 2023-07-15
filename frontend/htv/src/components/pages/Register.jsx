@@ -4,8 +4,10 @@ import * as Yup from "yup";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
+  const navigate = useNavigate();
   const saveUser = async (data) => {
     await axios
       .post("http://localhost:3000/register/", data)
@@ -15,6 +17,7 @@ const Register = () => {
         });
         console.log("Response: ", res);
         console.log("Response: ", res.data.message);
+        navigate("/login");
       })
       .catch((error) => {
         toast.error(error.response.data.message, {

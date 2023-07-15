@@ -4,9 +4,11 @@ import { useState } from "react";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [btn, setBtn] = useState(false);
+  const navigate = useNavigate();
   const userLogin = async (data) => {
     await axios
       .post("http://localhost:3000/login/", data)
@@ -14,7 +16,9 @@ const Login = () => {
         toast.success(res.data.message, {
           position: toast.POSITION.BOTTOM_CENTER,
         });
+        localStorage.setItem("authenticated", true);
         console.log(res);
+        navigate("/dashboard");
       })
       .catch((err) => {
         toast.error(err.response.data.message, {
